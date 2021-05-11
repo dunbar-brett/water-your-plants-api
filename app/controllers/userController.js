@@ -2,6 +2,9 @@
 // import dbQuery from '../db/dbQuery';
 
 const { dbQuery } = require("../db/dbQuery");
+const { successMessage, errorMessage, status } = require('../helpers/status');
+const { isEmpty } = require('../helpers/validations');
+const EMAIL_EXISTS_ROUTINE = '_bt_check_unique';
 
 // import validators
 
@@ -27,47 +30,38 @@ const getAllUsers = async (req, res) => {
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  // TODO:
-  // check if email already exists 
-  // hash password
-  const createUserQuery = `INSERT INTO users (name, email, password) VALUES (${name}, ${email}, ${password});`
+  if (isEmpty(email)) {
+    errorMessage.error = 'Email, password, first name and last name field cannot be empty';
+    
+    return res.status(status.bad).send(errorMessage);
+  }
 
+  const createUserQuery = `INSERT INTO users (name, email, password) VALUES ('${name}', '${email}', '${password}');`
+  
+  console.log(`query: ${createUserQuery}`);
   try {
     const { rows } = await dbQuery(createUserQuery);
-    const dbResponse = rows;
-    console.log(rows);
+    const dbResponse = rows[0];
+    console.log(dbResponse);
     
-    return res.json(dbResponse);
-
+    return res.status(status.success).send(successMessage);
   } catch (error) {
+    if (error.routine  === EMAIL_EXISTS_ROUTINE) {
+      errorMessage.error = 'email already exists';
 
-    return res.send(error);
-  }
-}
-
-const doesEmailExist = async (email) => {
-  const doesEmailExistQuery = `SELECT * FROM users WHERE email=${email};`;
-
-  try {
-    const { rows } = await dbQuery(doesEmailExistQuery);
-    const dbResponse = rows;
-    console.log(rows);
-
-    if (dbResponse[0] === undefined) {
-      console.log("There are no users with that email");
-
-      return true;
+      return res.status(status.conflict).send(errorMessage);
     }
-
-    return false;
-
-  } catch (error) {
-    // log error somehow
-    console.error(error);
     
-    return false;
+    errorMessage.error = 'Function was not successful';
+    return res.status(status.error).send(error);
   }
 }
+
+// move this to validation.js
+
+
+
+
 
 module.exports = { getAllUsers, createUser }
 

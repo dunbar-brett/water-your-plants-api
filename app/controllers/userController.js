@@ -5,11 +5,6 @@ const { dbQuery } = require("../db/dbQuery");
 
 // import validators
 
-// app.get('/users', (req, res) => {
-//   //res.json({ message: "Welcome to water your plants application." });
-//   res.send('<h1>Welcome to water your plants application.</h1>')
-// });
-
 const getAllUsers = async (req, res) => {
   const getAllUsersQuery = 'SELECT * FROM users ORDER BY id DESC;';
 
@@ -30,9 +25,14 @@ const getAllUsers = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-  const createUserQuery = `INSERT INTO users (name, email, password) VALUES ('TESTer', 'test1@email.com', 'password1');`
+  const { name, email, password } = req.body;
 
-  try{
+  // TODO:
+  // check if email already exists 
+  // hash password
+  const createUserQuery = `INSERT INTO users (name, email, password) VALUES (${name}, ${email}, ${password});`
+
+  try {
     const { rows } = await dbQuery(createUserQuery);
     const dbResponse = rows;
     console.log(rows);
@@ -42,6 +42,30 @@ const createUser = async (req, res) => {
   } catch (error) {
 
     return res.send(error);
+  }
+}
+
+const doesEmailExist = async (email) => {
+  const doesEmailExistQuery = `SELECT * FROM users WHERE email=${email};`;
+
+  try {
+    const { rows } = await dbQuery(doesEmailExistQuery);
+    const dbResponse = rows;
+    console.log(rows);
+
+    if (dbResponse[0] === undefined) {
+      console.log("There are no users with that email");
+
+      return true;
+    }
+
+    return false;
+
+  } catch (error) {
+    // log error somehow
+    console.error(error);
+    
+    return false;
   }
 }
 

@@ -3,10 +3,14 @@
 
 const { dbQuery } = require("../db/dbQuery");
 const { successMessage, errorMessage, status } = require('../helpers/status');
-const { isEmpty } = require('../helpers/validations');
+const { 
+  isEmpty,
+  isValidEmail,
+  generateUserToken,
+  hashPassword,
+  validatePassword
+} = require('../helpers/validations');
 const EMAIL_EXISTS_ROUTINE = '_bt_check_unique';
-
-// import validators
 
 const getAllUsers = async (req, res) => {
   const getAllUsersQuery = 'SELECT * FROM users ORDER BY id DESC;';
@@ -30,22 +34,46 @@ const getAllUsers = async (req, res) => {
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
-  if (isEmpty(email)) {
+  if (isEmpty(email) || isEmpty(name) || isEmpty(password)) {
     errorMessage.error = 'Email, password, first name and last name field cannot be empty';
     
     return res.status(status.bad).send(errorMessage);
   }
 
-  const createUserQuery = `INSERT INTO users (name, email, password) VALUES ('${name}', '${email}', '${password}');`
-  
-  console.log(`query: ${createUserQuery}`);
+  if (!isValidEmail(email)) {
+    errorMessage.error = 'Email is invalid.';
+
+    return res.status(status.bad).send(errorMessage);
+  }
+
+  if(!validatePassword(password)) {
+    errorMessage.error = 'Password is invalid.';
+
+    return res.status(status.bad).send(errorMessage);
+  }
+
   try {
+    const hashedPassword = await hashPassword(password);
+  
+    const createUserQuery = `INSERT INTO users (name, email, password) VALUES ('${name}', '${email}', '${hashedPassword}') returning *;`
+    
+    console.log(`query: ${createUserQuery}`);
     const { rows } = await dbQuery(createUserQuery);
     const dbResponse = rows[0];
     console.log(dbResponse);
-    
+
+
+    // delete password from db.response
+    delete dbResponse.password;
+    // create user token
+    const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.name);
+    // add response and token to success.data
+    successMessage.data = dbResponse;
+    successMessage.data.token = token;
+
     return res.status(status.success).send(successMessage);
-  } catch (error) {
+  } 
+  catch (error) {
     if (error.routine  === EMAIL_EXISTS_ROUTINE) {
       errorMessage.error = 'email already exists';
 
@@ -56,8 +84,6 @@ const createUser = async (req, res) => {
     return res.status(status.error).send(error);
   }
 }
-
-// move this to validation.js
 
 
 

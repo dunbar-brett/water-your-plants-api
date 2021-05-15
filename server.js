@@ -20,7 +20,6 @@ app.use('/api/v1', usersRoutes);
 
 // simple route
 app.get('/', (req, res) => {
-  //res.json({ message: "Welcome to water your plants application." });
   res.send('<h1>Welcome to water your plants application!</h1>')
 });
 

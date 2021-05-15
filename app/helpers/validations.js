@@ -6,9 +6,12 @@ const isEmpty = (input) => {
   if (input === undefined || input === '') {
     return true;
   }
+  // check for whitespace
   if (input.replace(/\s/g, '').length) {
     return false;
-  } return true;
+  }
+  
+  return true;
 };
 
 const generateUserToken = (email, id, name) => {
@@ -28,6 +31,7 @@ const generateUserToken = (email, id, name) => {
 }
 
 const isValidEmail = (email) => {
+  // regex for email, there likely is a better one
   const regEx = /\S+@\S+\.\S+/;
   return regEx.test(email);
 };

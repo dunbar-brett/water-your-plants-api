@@ -56,7 +56,7 @@ const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 const hashPassword = password => bcrypt.hashSync(password, salt);
 
-const passwordsMatch = async(dbPassword, password) => {
+const passwordsMatch = (dbPassword, password) => {
   // console.log(`dbPassword: ${dbPassword}`)
   // console.log(`password: ${password}`)
   return bcrypt.compareSync(password, dbPassword);

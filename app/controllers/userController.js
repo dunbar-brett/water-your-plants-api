@@ -8,6 +8,7 @@ const {
   isValidEmail,
   isValidPassword,
   generateUserToken,
+  passwordsMatch,
   hashPassword,
 } = require('../helpers/validations');
 
@@ -50,7 +51,7 @@ const createUser = async (req, res) => {
     return res.status(status.bad).send(errorMessage);
   }
 
-  if(!validatePassword(password)) {
+  if(!isValidPassword(password)) {
     errorMessage.error = 'Password is invalid.';
 
     return res.status(status.bad).send(errorMessage);
@@ -126,6 +127,11 @@ const loginUser = async(req, res) => {
     }
 
     // compare password here
+    //console.log(dbResponse.password, password);
+    if (!passwordsMatch(dbResponse.password, password)) {
+      errorMessage.error = 'The password you provided is incorrect';
+      return res.status(status.bad).send(errorMessage);
+    }
 
     const token = generateUserToken(dbResponse.email, dbResponse.id, dbResponse.name);
     delete dbResponse.password;

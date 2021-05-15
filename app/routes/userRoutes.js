@@ -1,13 +1,14 @@
 const express = require('express');
 
-// import controller methods from users controller
 const { 
+  createUser,
   getAllUsers,
-  createUser } = require('../controllers/userController');
+  loginUser } = require('../controllers/userController');
 
 let router = express.Router();
 
 router.get('/users', getAllUsers);
-router.post('/users', createUser)
+router.post('/users', createUser);
+router.post('/users/login', loginUser);
 
 module.exports = router;

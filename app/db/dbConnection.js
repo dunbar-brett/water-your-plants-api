@@ -53,3 +53,5 @@ const dropAllTables = () => {
   dropUserTable();
 };
 module.exports = { createAllTables, dropAllTables }
+
+require('make-runnable');

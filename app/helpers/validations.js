@@ -36,7 +36,7 @@ const isValidEmail = (email) => {
   return regEx.test(email);
 };
 
-const validatePassword = (password) => {
+const isValidPassword = (password) => {
   if (password.length <= 6 || password === '') {
     return false;
   } 
@@ -53,4 +53,4 @@ const hashPassword = async (password) => {
   return hashedPassword;
 }
 
-module.exports = { isEmpty, generateUserToken, isValidEmail, validatePassword, hashPassword };
+module.exports = { isEmpty, generateUserToken, isValidEmail, isValidPassword, hashPassword };

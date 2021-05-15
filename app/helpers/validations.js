@@ -46,12 +46,7 @@ const isValidPassword = (password) => {
   return true;
 };
 
-// const hashPassword = async (password) => {
-//   const salt = 10;//await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(password, salt);
 
-//   return hashedPassword;
-// }
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 const hashPassword = password => bcrypt.hashSync(password, salt);

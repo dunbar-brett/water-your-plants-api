@@ -52,7 +52,28 @@ const addPlant = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
-const deletePlant = async (req, res) => {return};
+const deletePlant = async (req, res) => {
+  const { plantId } = req.params;
+  const { userId } = req.user;
+  const deletePlantQuery = 'DELETE FROM booking WHERE id=$1 AND user_id = $2 returning *';
+
+  try {
+    const { rows } = await dbQuery(deletePlantQuery, [plantId, userId]);
+    const dbResponse = rows[0];
+    
+    if (!dbResponse) {
+      errorMessage.error = 'You have no booking with that id';
+      return res.status(status.notfound).send(errorMessage);
+    }
+
+    successMessage.data = {};
+    successMessage.data.message = 'Booking deleted successfully';
+
+    return res.status(status.success).send(successMessage);
+  } catch (error) {
+    return res.status(status.error).send(error);
+  }
+};
 const updatePlant = async (req, res) => {
   // const createPlantQuery = `INSERT INTO 
   // plants(user_id, location_id, sun_req_id, name, fertilizer_frequency, last_watered, last_fertilized, created_on)

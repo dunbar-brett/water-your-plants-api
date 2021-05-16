@@ -4,7 +4,9 @@ const express = require('express');
 const app = express();
 //const { pool } = require('./app/config/db.config')
 const cors = require('cors');
+
 const usersRoutes = require('./app/routes/userRoutes');
+const plantsRoutes = require('./app/routes/plantRoutes');
 
 const corsOptions = {
   origin: 'http://localhost:8082'
@@ -17,6 +19,7 @@ app.use(express.json());
 
 // ********** Routes *******************
 app.use('/api/v1', usersRoutes);
+app.use('/api/v1', plantsRoutes);
 
 // simple route
 app.get('/', (req, res) => {

@@ -13,7 +13,7 @@ const {
   hashPassword,
 } = require('../helpers/validations');
 
-const EMAIL_EXISTS_ROUTINE = '_bt_check_unique';
+const NOT_UNIQUE_ROUTINE = '_bt_check_unique';
 
 const getAllUsers = async (req, res) => {
   const getAllUsersQuery = 'SELECT * FROM users ORDER BY id DESC;';
@@ -32,7 +32,7 @@ const getAllUsers = async (req, res) => {
 
     return res.send(error);
   }
-}
+};
 
 /*
   CREATE USER
@@ -79,10 +79,10 @@ const createUser = async (req, res) => {
     successMessage.data = dbResponse;
     successMessage.data.token = token;
 
-    return res.status(status.success).send(successMessage);
+    return res.status(status.created).send(successMessage);
   } 
   catch (error) {
-    if (error.routine  === EMAIL_EXISTS_ROUTINE) {
+    if (error.routine  === NOT_UNIQUE_ROUTINE) {
       errorMessage.error = 'email already exists';
 
       return res.status(status.conflict).send(errorMessage);
@@ -91,7 +91,7 @@ const createUser = async (req, res) => {
     errorMessage.error = 'Operation was not successful';
     return res.status(status.error).send(error);
   }
-}
+};
 
 /*
   LOGIN
@@ -101,19 +101,16 @@ const loginUser = async(req, res) => {
 
   if (isEmpty(email) || isEmpty(password)) {
     errorMessage.error = 'email and password cannot be empty';
-
     return res.status(status.bad).send(errorMessage);
   }
 
   if (!isValidEmail(email)) {
     errorMessage.error = 'Email is invalid.';
-
     return res.status(status.bad).send(errorMessage);
   }
 
   if (!isValidPassword(password)) {
     errorMessage.error = 'Password is invalid.';
-
     return res.status(status.bad).send(errorMessage);
   }
 
@@ -147,7 +144,7 @@ const loginUser = async(req, res) => {
     errorMessage.error = 'Operation was not successful.';
     return res.status(status.error).send(error);
   }
-}
+};
 
 
 

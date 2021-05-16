@@ -2,6 +2,7 @@
 // import dbQuery from '../db/dbQuery';
 
 const { dbQuery } = require("../db/dbQuery");
+const moment = require('moment');
 const { successMessage, errorMessage, status } = require('../helpers/status');
 const { 
   isEmpty,
@@ -59,8 +60,10 @@ const createUser = async (req, res) => {
 
   try {
     const hashedPassword = await hashPassword(password);
+    const createdOn = moment(new Date()).format();
+    console.log(createdOn);
   
-    const createUserQuery = `INSERT INTO users (name, email, password) VALUES ('${name}', '${email}', '${hashedPassword}') returning *;`
+    const createUserQuery = `INSERT INTO users (name, email, password, created_on) VALUES ('${name}', '${email}', '${hashedPassword}', '${createdOn}') returning *;`
     
     //console.log(`query: ${createUserQuery}`);
     const { rows } = await dbQuery(createUserQuery);

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -15,6 +16,7 @@ const isEmpty = (input) => {
 };
 
 const generateUserToken = (email, id, name) => {
+  // todo save this to a table
   const token = jwt.sign(
     {
       email,

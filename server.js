@@ -1,8 +1,6 @@
-// https://bezkoder.com/node-js-jwt-authentication-postgresql/#Create_Nodejs_App
-// require("babel-polyfill");
+/* eslint-disable no-undef */
 const express = require('express');
 const app = express();
-//const { pool } = require('./app/config/db.config')
 const cors = require('cors');
 
 const usersRoutes = require('./app/routes/userRoutes');
@@ -20,13 +18,6 @@ app.use(express.json());
 // ********** Routes *******************
 app.use('/api/v1', usersRoutes);
 app.use('/api/v1', plantsRoutes);
-
-// simple route
-app.get('/', (req, res) => {
-  res.send('<h1>Welcome to water your plants application!</h1>')
-});
-
-
 
 // ************** Start Up *****************
 const PORT = process.env.PORT || 8080;

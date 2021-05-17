@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const jwt = require('jsonwebtoken');
 const {
   errorMessage, status,
@@ -5,7 +6,7 @@ const {
 
 require('dotenv').config();
 
-
+// At the moment this only validates if there is a user token
 const validateUserToken = async(req, res, next) => {
   const { token } = req.headers;
 

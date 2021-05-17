@@ -11,7 +11,7 @@ const {
 } = require ('../controllers/plantController');
 const router = express.Router();
 
-router.get('/plants', getAllPlants); // dev route, comment out for prod
+router.get('/plants', validateUserToken, getAllPlants); // dev route, comment out for prod
 router.post('/plants/:userId', validateUserToken, addPlant);
 router.get('/plants/:plantId', validateUserToken, getPlantById);
 router.delete('/plants/:plantId', validateUserToken, deletePlant);

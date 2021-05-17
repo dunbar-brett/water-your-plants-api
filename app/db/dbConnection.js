@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const db = require('../config/db.config');
 
 const dbPoolOn = () => {
@@ -22,12 +23,11 @@ const createUsersTable = () => {
   db.pool.query(usersCreateQuery)
     .then((res) => {
       console.log('SUCCESS: Users');
-      //console.log(res);
       // db.pool.end();
     })
     .catch((err) => {
       console.log('ERROR: Users');
-      //console.log(err);
+      console.log(err);
       // db.pool.end();
     });
 }
@@ -39,12 +39,11 @@ const dropUsersTable = () => {
   db.pool.query(usersDropQuery)
     .then((res) => {
       console.log('SUCCESS: Users');
-      //console.log(res);
       // db.pool.end();
     })
     .catch((err) => {
       console.log('ERROR: Users');
-      //console.log(err);
+      console.log(err);
       // db.pool.end();
     });
 }
@@ -66,12 +65,11 @@ const createPlantsTable = () => {
   db.pool.query(createPlantTableQuery)
     .then((res) => {
       console.log('SUCCESS: Plants');
-      //console.log(res);
       // db.pool.end();
     })
     .catch((err) => {
       console.log('ERROR: Plants');
-      //console.log(err);
+      console.log(err);
       // db.pool.end();
     });
 }
@@ -83,7 +81,6 @@ const dropPlantsTable = () => {
   db.pool.query(plantsDropQuery)
     .then((res) => {
       console.log('SUCCESS: Plants');
-      //console.log(res);
       // db.pool.end();
     })
     .catch((err) => {

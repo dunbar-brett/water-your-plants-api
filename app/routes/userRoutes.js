@@ -3,7 +3,10 @@ const express = require('express');
 const { 
   createUser,
   getAllUsers,
-  loginUser } = require('../controllers/userController');
+  loginUser,
+  // todo logout - deletes token
+  // update user
+} = require('../controllers/userController');
 
 const router = express.Router();
 

@@ -4,8 +4,6 @@ const { successMessage, errorMessage, status } = require('../helpers/status');
 const { isEmpty } = require("../helpers/validations");
 
 
-const NOT_UNIQUE_ROUTINE = '_bt_check_unique';
-
 const addPlant = async (req, res) => {
   const { userId } = req.params;
   const {
@@ -16,7 +14,7 @@ const addPlant = async (req, res) => {
     id
   } = req.user;
 
-  if (id != userId) { // todo: type mismatch-- fix it
+  if (id !== userId) { // todo: type mismatch-- fix it
     console.log(`uId: ${userId} tId: ${id}`);
     errorMessage.error = 'User id param and token user id do not match.';
     return res.status(status.unauthorized).send(errorMessage);
@@ -55,7 +53,7 @@ const addPlant = async (req, res) => {
 const deletePlant = async (req, res) => {
   const { plantId } = req.params;
   const { userId } = req.user;
-  const deletePlantQuery = 'DELETE FROM booking WHERE id=$1 AND user_id = $2 returning *';
+  const deletePlantQuery = 'DELETE FROM plants WHERE id=$1 AND user_id = $2 returning *';
 
   try {
     const { rows } = await dbQuery(deletePlantQuery, [plantId, userId]);
@@ -76,28 +74,62 @@ const deletePlant = async (req, res) => {
 };
 const updatePlant = async (req, res) => {
   const { plantId } = req.params;
-  const { userId, locationId, sunReqId, name, waterFrequency, fertilizerFrequency, lastWaterted, lastFertilized}
+  const { 
+    userId,
+    locationId,
+    sunReqId,
+    name,
+    waterFrequency,
+    fertilizerFrequency, 
+    lastWaterted,
+    lastFertilized } = req.body;
   
   if (isEmpty(userId) || isEmpty(name)) {
     errorMessage.error = 'User ID and Name field cannot be empty';
-    
     return res.status(status.bad).send(errorMessage);
   }
 
-  const findPlantQuery = `SELECT * FROM plants WHERE id=${plantId}`;
+  const findPlantQuery = 'SELECT * FROM plants WHERE id=$1';
 
   const updatePlantQuery = `UPDATE plants
-    SET location_id='${locationId}', 
-    sun_req_id='${sunReqId}',
-    water_frequency=${waterFrequency},
-    fertilizer_frequency=${fertilizerFrequency},
-    last_watered=${lastWaterted},
-    last_fertilized=${lastFertilized}
-    WHERE user_id='${userId}' AND id='${plantId}' returning *;`;
+    SET location_id=$1, 
+    sun_req_id=$2,
+    water_frequency=$3,
+    fertilizer_frequency=$4,
+    last_watered=$5,
+    last_fertilized=$6
+    WHERE user_id=$7 AND id=$8 returning *;`;
  
-  
+  const values = [
+    locationId,
+    sunReqId,
+    waterFrequency,
+    fertilizerFrequency,
+    lastWaterted,
+    lastFertilized,
+    userId,
+    plantId
+  ]
 
-  return
+  try {
+    const { rows } = await dbQuery(findPlantQuery, plantId);
+    const dbResponse = rows[0];
+
+    if(!dbResponse) {
+      errorMessage.error = 'Plant cannot be found';
+      return res.status(status.notfound).send(errorMessage);
+    }
+
+    const response = await dbQuery(updatePlantQuery, values);
+    const dbResult = response.rows[0];
+    
+    successMessage.data = dbResult;
+    return res.status(status.success).send(successMessage);
+  }
+  catch (error) {
+    errorMessage.error = 'Operation was not successful';
+    return res.status(status.error).send(errorMessage);
+  }
 };
 
 const getAllPlants = async (req, res) => {
@@ -119,8 +151,8 @@ const getAllPlants = async (req, res) => {
   }
 };
 
-const getPlantById = async (req, res) => {return};
-const getAllPlantsByUserId = async (req, res) => {return};
+const getPlantById = async (req, res) => {return res.status(status.notImplemented).send(errorMessage)};
+const getAllPlantsByUserId = async (req, res) => {return res.status(status.notImplemented).send(errorMessage)};
 
 module.exports = {
   addPlant,

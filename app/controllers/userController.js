@@ -1,7 +1,4 @@
-// import moment from 'moment';
-// import dbQuery from '../db/dbQuery';
-
-const { dbQuery } = require("../db/dbQuery");
+const { dbQuery } = require('../db/dbQuery');
 const moment = require('moment');
 const { successMessage, errorMessage, status } = require('../helpers/status');
 const { 
@@ -23,7 +20,7 @@ const getAllUsers = async (req, res) => {
     const dbResponse = rows;
 
     if (dbResponse[0] === undefined) {
-      return res.send("There are no users");
+      return res.send('There are no users');
     }
     
     return res.json(dbResponse);
@@ -63,12 +60,19 @@ const createUser = async (req, res) => {
     const createdOn = moment(new Date()).format();
     console.log(createdOn);
   
-    const createUserQuery = `INSERT INTO users (name, email, password, created_on) VALUES ('${name}', '${email}', '${hashedPassword}', '${createdOn}') returning *;`
+    const createUserQuery = 'INSERT INTO users (name, email, password, created_on) VALUES ($1, $2, $3, $4) returning *'
     
-    //console.log(`query: ${createUserQuery}`);
-    const { rows } = await dbQuery(createUserQuery);
+    const values = [
+      name,
+      email,
+      hashedPassword,
+      createdOn
+    ]
+
+    // console.log(`query: ${createUserQuery}`);
+    const { rows } = await dbQuery(createUserQuery, values);
     const dbResponse = rows[0];
-    //console.log(dbResponse);
+    // console.log(dbResponse);
 
 
     // delete password from db.response
@@ -127,7 +131,7 @@ const loginUser = async(req, res) => {
     }
 
     // compare password here
-    //console.log(dbResponse.password, password);
+    // console.log(dbResponse.password, password);
     if (!passwordsMatch(dbResponse.password, password)) {
       errorMessage.error = 'The password you provided is incorrect';
       return res.status(status.bad).send(errorMessage);

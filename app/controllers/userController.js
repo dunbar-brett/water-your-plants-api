@@ -41,7 +41,7 @@ const createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   if (isEmpty(email) || isEmpty(name) || isEmpty(password)) {
-    errorMessage.error = 'Email, password, first name and last name field cannot be empty';
+    errorMessage.error = 'Email, password, and name field cannot be empty';
     
     return res.status(status.bad).send(errorMessage);
   }

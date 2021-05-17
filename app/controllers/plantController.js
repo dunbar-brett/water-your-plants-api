@@ -75,11 +75,28 @@ const deletePlant = async (req, res) => {
   }
 };
 const updatePlant = async (req, res) => {
-  // const createPlantQuery = `INSERT INTO 
-  // plants(user_id, location_id, sun_req_id, name, fertilizer_frequency, last_watered, last_fertilized, created_on)
-  // VALUES($1, $2, $3, $4, $5, $6, $7, $8)
-  // returning *;`;  
+  const { plantId } = req.params;
+  const { userId, locationId, sunReqId, name, waterFrequency, fertilizerFrequency, lastWaterted, lastFertilized}
   
+  if (isEmpty(userId) || isEmpty(name)) {
+    errorMessage.error = 'User ID and Name field cannot be empty';
+    
+    return res.status(status.bad).send(errorMessage);
+  }
+
+  const findPlantQuery = `SELECT * FROM plants WHERE id=${plantId}`;
+
+  const updatePlantQuery = `UPDATE plants
+    SET location_id='${locationId}', 
+    sun_req_id='${sunReqId}',
+    water_frequency=${waterFrequency},
+    fertilizer_frequency=${fertilizerFrequency},
+    last_watered=${lastWaterted},
+    last_fertilized=${lastFertilized}
+    WHERE user_id='${userId}' AND id='${plantId}' returning *;`;
+ 
+  
+
   return
 };
 

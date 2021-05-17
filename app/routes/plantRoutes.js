@@ -18,6 +18,4 @@ router.delete('/plants/:plantId', validateUserToken, deletePlant);
 router.put('/plants/:plantId', validateUserToken, updatePlant);
 router.get('/plants/all/:userId', validateUserToken, getAllPlantsByUserId);
 
-
-
 module.exports = router;

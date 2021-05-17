@@ -45,6 +45,7 @@ const addPlant = async (req, res) => {
     return res.status(status.error).send(errorMessage);
   }
 };
+
 const deletePlant = async (req, res) => {
   const { plantId } = req.params;
   const { userId } = req.user;
@@ -55,18 +56,19 @@ const deletePlant = async (req, res) => {
     const dbResponse = rows[0];
     
     if (!dbResponse) {
-      errorMessage.error = 'You have no booking with that id';
+      errorMessage.error = 'You have no plant with that id';
       return res.status(status.notfound).send(errorMessage);
     }
 
     successMessage.data = {};
-    successMessage.data.message = 'Booking deleted successfully';
+    successMessage.data.message = 'Plant deleted successfully';
 
     return res.status(status.success).send(successMessage);
   } catch (error) {
     return res.status(status.error).send(error);
   }
 };
+
 const updatePlant = async (req, res) => {
   const { plantId } = req.params;
   const { 

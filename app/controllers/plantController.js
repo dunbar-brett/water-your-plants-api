@@ -9,7 +9,7 @@ const addPlant = async (req, res) => {
   const { name } = req.body;
   const { id } = req.user;
 
-  if (id !== userId) { // todo: type mismatch-- fix it
+  if (id != userId) { // todo: type mismatch-- fix it
     console.log(`uId: ${userId} tId: ${id}`);
     errorMessage.error = 'User id param and token user id do not match.';
     return res.status(status.unauthorized).send(errorMessage);
@@ -87,15 +87,17 @@ const updatePlant = async (req, res) => {
   const findPlantQuery = 'SELECT * FROM plants WHERE id=$1';
 
   const updatePlantQuery = `UPDATE plants
-    SET location_id=$1, 
-    sun_req_id=$2,
-    water_frequency=$3,
-    fertilizer_frequency=$4,
-    last_watered=$5,
-    last_fertilized=$6
-    WHERE user_id=$7 AND id=$8 returning *;`;
+    SET name=$1,
+    location_id=$2, 
+    sun_req_id=$3,
+    water_frequency=$4,
+    fertilizer_frequency=$5,
+    last_watered=$6,
+    last_fertilized=$7
+    WHERE user_id=$8 AND id=$9 returning *;`;
  
   const values = [
+    name,
     locationId,
     sunReqId,
     waterFrequency,
@@ -107,7 +109,7 @@ const updatePlant = async (req, res) => {
   ]
 
   try {
-    const { rows } = await dbQuery(findPlantQuery, plantId);
+    const { rows } = await dbQuery(findPlantQuery, [plantId]);
     const dbResponse = rows[0];
 
     if(!dbResponse) {
@@ -122,6 +124,7 @@ const updatePlant = async (req, res) => {
     return res.status(status.success).send(successMessage);
   }
   catch (error) {
+    console.log(error);
     errorMessage.error = 'Operation was not successful';
     return res.status(status.error).send(errorMessage);
   }

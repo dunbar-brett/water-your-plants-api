@@ -25,7 +25,7 @@ const generateUserToken = (email, id, name) => {
     },
     process.env.DB_SECRET,
     {
-      expiresIn: '1d'
+      expiresIn: '10m'
     }
   );
 

@@ -4,8 +4,8 @@
   "description": "API to be used with Water Your Plants Web App",
   "main": "server.js",
   "scripts": {
-    "setup": "babel-node ./app/db/dbConnection createAllTables",
-    "drop-all-tables": "babel-node ./app/db/dbConnection dropAllTables",
+    "setup": "babel-node ./app/db/dbSetup createAllTables",
+    "drop-all-tables": "babel-node ./app/db/dbSetup dropAllTables",
     "start": "node server",
     "dev": "nodemon server"
   },

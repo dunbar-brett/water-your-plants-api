@@ -11,7 +11,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// Add middleware for parsing JSON and urlencoded data and populating `req.body`
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 

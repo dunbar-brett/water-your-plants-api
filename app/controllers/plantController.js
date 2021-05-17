@@ -1,18 +1,13 @@
-const { dbQuery } = require("../db/dbQuery");
 const moment = require('moment');
-const { successMessage, errorMessage, status } = require('../helpers/status');
-const { isEmpty } = require("../helpers/validations");
 
+const { dbQuery } = require('../db/dbQuery');
+const { successMessage, errorMessage, status } = require('../helpers/status');
+const { isEmpty } = require('../helpers/validations');
 
 const addPlant = async (req, res) => {
   const { userId } = req.params;
-  const {
-    name
-  } = req.body;
-  // get this from middleware
-  const {
-    id
-  } = req.user;
+  const { name } = req.body;
+  const { id } = req.user;
 
   if (id !== userId) { // todo: type mismatch-- fix it
     console.log(`uId: ${userId} tId: ${id}`);

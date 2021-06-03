@@ -1,0 +1,99 @@
+<html>
+<head>
+  <title>Login</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+  <form id="login-form">  
+    <div class="container">   
+      <label>Email : </label>   
+      <input class="email-input" type="text"
+        placeholder="Enter Email" name="email" required>
+      
+      <label>Password : </label>   
+      <input class="password-input" type="password"
+        placeholder="Enter Password" name="password" required>  
+      
+      <button class="login-btn" type="submit">Login</button>   
+      <button type="button" class="cancel-btn"> Cancel</button>
+    </div>
+    <div>
+      <p class="error hide">Unable to log in</p>
+    </div>
+    <div class="success hide">
+      <p>Logged In!</p>
+      <p>Here is your token</p>
+      <pre class="token"></pre>
+      <button class="copy-clip-btn" type="button">Copy To Clipboard</button>
+    </div>
+  </form>
+  <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script> 
+
+  <!-- <script type="text/javascript" src='./login.js'></script>   -->
+
+  <script>
+    const loginForm = $('#login-form');
+    $(function(){
+      loginSubmitHandler();
+      cancelBtnHandler();
+
+      loginForm.change(() => {
+        $('.error').addClass('hide');
+      })
+    });
+
+    let email = $('.email-input');
+    let password = $('.password-input');
+    function loginSubmitHandler() {
+      loginForm.on('submit', (event) => {
+        let settings = {
+          "url": "http://localhost:8080/api/v1/users/login",
+          "method": "POST",
+          "timeout": 0,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "data": JSON.stringify({
+            "email": email.val(),
+            "password": password.val()
+          }),
+        };
+
+        $.ajax(settings)
+          .done((res) => {
+            console.log('done');
+            console.log(res);
+            $('.success').toggleClass('hide');
+            $('.token').text(res.data.token)
+          })
+          .fail((res) => {
+            console.log('fail');
+            $('.error').toggleClass('hide');
+          });
+
+        
+        event.preventDefault();
+      })
+    }
+
+    const cancelBtn = $('.cancel-btn');
+    function cancelBtnHandler() {
+      cancelBtn.on('click', () => {
+        email.val('');
+        password.val('');
+        $('.error').addClass('hide');
+        console.log('cancel')
+      })
+    }
+    
+  </script>
+  <style>
+    .hide{
+      display: none;
+    }
+  </style>
+</body>
+</html>

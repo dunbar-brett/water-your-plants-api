@@ -17,6 +17,14 @@ app.use(express.json());
 // ********** Routes *******************
 app.use('/api/v1', usersRoutes);
 app.use('/api/v1', plantsRoutes);
+app.get('/', (req, res) => {
+  res.sendFile('./app/views/login/index.html', {root: __dirname});
+});
+
+app.get('/plants', (req, res) => {
+  res.sendFile('./app/views/plants/index.html', {root: __dirname});
+});
+
 
 // ************** Start Up *****************
 const PORT = process.env.PORT || 8080;

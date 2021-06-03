@@ -1,0 +1,87 @@
+<html>
+<head>
+  <title>Plant List</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+</head>
+<body>
+  <h1>Plants!</h1>
+  <form id="token-form">  
+    <div class="container">   
+      <label>Token : </label>   
+      <input class="token-input" type="text"
+        placeholder="Enter Token" name="token" required>  
+      
+      <button class="login-btn" type="submit">Get Plants</button>   
+      <button type="button" class="cancel-btn"> Cancel</button>
+    </div>
+    <div>
+      <p class="error hide">Unable to get plants!</p>
+    </div>
+  </form>
+  <div class="success hide">
+    <pre class="plants"></pre>
+  </div>
+  <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script> 
+
+  <!-- <script type="text/javascript" src='./login.js'></script>   -->
+
+  <script>
+    const tokenForm = $('#token-form');
+    $(function(){
+      tokenSubmitHandler();
+      cancelBtnHandler();
+
+      tokenForm.change(() => {
+        $('.error').addClass('hide');
+      })
+    });
+
+    let token = $('.token-input');
+    function tokenSubmitHandler() {
+      tokenForm.on('submit', (event) => {
+        let settings = {
+          "url": "http://localhost:8080/api/v1/plants",
+          "method": "GET",
+          "timeout": 0,
+          "headers": {
+            "token": token.val()
+          },
+        };
+
+        $.ajax(settings)
+          .done((res) => {
+            console.log('done');
+            console.log(res);
+            $('.success').toggleClass('hide');
+            $('.plants').text(JSON.stringify(res, null, 2))
+          })
+          .fail((res) => {
+            console.log('fail');
+            $('.error').toggleClass('hide');
+          });
+
+        
+        event.preventDefault();
+      })
+    }
+
+    const cancelBtn = $('.cancel-btn');
+    function cancelBtnHandler() {
+      cancelBtn.on('click', () => {
+        token.val('');
+        $('.error').addClass('hide');
+        console.log('cancel')
+      })
+    }
+    
+  </script>
+  <style>
+    .hide{
+      display: none;
+    }
+  </style>
+</body>
+</html>
